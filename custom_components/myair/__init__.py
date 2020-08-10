@@ -57,15 +57,17 @@ async def async_setup(hass, config):
     async def async_update_data():
         try:
             resp = await session.get(f"{uri_scheme}{host}:{port}/getSystemData")
+            data = await resp.read()
             #assert resp.status == 200
-            return await resp.json()
+            return json.loads(data)
         except Exception as err:
             raise UpdateFailed(f"Error getting MyAir data: {err}")
 
     async def async_set_data(data):
         try:
             resp = await session.get(f"{uri_scheme}{host}:{port}/setAircon", params={'json':json.dumps(data)}) 
-            return await resp.json()
+            data = await resp.read()
+            return json.loads(data)
         except Exception as err:
             raise UpdateFailed(f"Error setting MyAir data: {err}")
 
